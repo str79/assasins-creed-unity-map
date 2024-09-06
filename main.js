@@ -2672,4 +2672,4 @@ $(document).ready(function() {
 		localStorage.removeItem(name);
 	}	
 	//работа с куками
-});									
+});
