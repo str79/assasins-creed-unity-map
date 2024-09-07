@@ -610,10 +610,20 @@ $(document).ready(function() {
 		$('.mainfly').toggleClass('hide');
 	});
 	function addslashes( str ) {
-		return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+		var slash="\\";
+		//return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+		//return str.replace('/(["\'\])/g', "\\$1").replace('/\0/g', "\\0");
+		//return str.replace(/(["'\/])/g, slash.charAt(0)+"$1");
+		//проблема только при переводе
+		return str.replace(/(["'\/])/g, slash+"$1");
 	}
+	$('#flylist > .container > h2').on('click',function(event){
+		if (event.ctrlKey){
+			$(this).siblings('.maingroups').toggleClass('hide');
+		}
+	});
 	function drawpoint(tmppoint,ptarr,nindex){
-		//для вывода в файл settings, формирует массив точек
+		//для вывода в файл settings, формирует массив точек старой карты
 		ptprops='';
 		for (prop in self[Profiles[nindex].pointarr][tmppoint]) {
 			if (prop=='PointIndex'){continue;}
@@ -625,11 +635,21 @@ $(document).ready(function() {
 		}
 		return '\t{'+"\n"+ptprops+'\t},'+"\n";
 	}
-	$('#flylist > .container > h2').on('click',function(event){
-		if (event.ctrlKey){
-			$(this).siblings('.maingroups').toggleClass('hide');
+	function drawpointCur(el,group){
+		//для вывода в файл settings, формирует массив точек текущей карты
+		var elemmap=$(el);
+		var curbtn='';
+		if (typeof(group)=='undefined' || group=='undefined'){
+			group=el.data('group');
 		}
-	});
+		curbtn+="\t"+'{'+"\n";
+		curbtn+="\t\t"+"'Name':'"+addslashes(elemmap.attr('title'))+"',"+"\n";
+		curbtn+="\t\t"+"'CoordX':'"+elemmap.css('left')+"',"+"\n";
+		curbtn+="\t\t"+"'CoordY':'"+elemmap.css('top')+"',"+"\n";
+		curbtn+="\t\t"+"'Groups':'"+"["+group+"]',"+"\n";
+		curbtn+="\t"+'},'+"\n";
+		return curbtn;
+	}	
 	$('#flylist > .container > h2').dblclick(function(event){
 		var curtext='',alton=0;
 		var customStyles=[];
@@ -662,29 +682,29 @@ $(document).ready(function() {
 			//сортируем массив ключей профиля в историческом порядке
 			var arrsort=[];
 			for (nindex in Profiles) {
-				//Profiles[nindex].pointarr
-				tmpsort=Object.keys(self[Profiles[nindex].pointarr]);
-				//дополняем
-				for (tmppoint in tmpsort) {
-					tmpsort[tmppoint]=preId+(Number(tmpsort[tmppoint])+Profiles[nindex].StartIndex)+profSym+Profiles[nindex].pointarr;
-				}
-				//сортируем индексы
-				//инвертируем в случае отсутствия значения в истории - те, которых нет в истории сдвинутся вперед
-				//2-3, -(-1-3)=4,-(2--3)=5,-(-1--1)=0, числа положительные, значит больше и пойдут в конец массива
-				tmpsort.sort((a, b) => ((globhist.indexOf(a)<0 || globhist.indexOf(b)<0)?-(globhist.indexOf(a) - globhist.indexOf(b)):(globhist.indexOf(a) - globhist.indexOf(b))));
-				//Переделываем историю
-				for (tmppoint in tmpsort) {
-					tmppos=globhist.indexOf(tmpsort[tmppoint]);
-					if (tmppos>=0){
-						newGlobhist[tmppos]=preId+(Number(tmppoint)+Profiles[nindex].StartIndex)+profSym+Profiles[nindex].pointarr;
-					}					
-				}
-				//удаляем дополнения
-				for (tmppoint in tmpsort) {
-					tmpsort[tmppoint]=(Number(tmpsort[tmppoint].split(profSym)[0].replace(preId,''))-Profiles[nindex].StartIndex);
-				}
-				//tmparr=newid.split(profSym);
-				arrsort[nindex]=tmpsort;
+			//Profiles[nindex].pointarr
+			tmpsort=Object.keys(self[Profiles[nindex].pointarr]);
+			//дополняем
+			for (tmppoint in tmpsort) {
+				tmpsort[tmppoint]=preId+(Number(tmpsort[tmppoint])+Profiles[nindex].StartIndex)+profSym+Profiles[nindex].pointarr;
+			}
+			//сортируем индексы
+			//инвертируем в случае отсутствия значения в истории - те, которых нет в истории сдвинутся вперед
+			//2-3, -(-1-3)=4,-(2--3)=5,-(-1--1)=0, числа положительные, значит больше и пойдут в конец массива
+			tmpsort.sort((a, b) => ((globhist.indexOf(a)<0 || globhist.indexOf(b)<0)?-(globhist.indexOf(a) - globhist.indexOf(b)):(globhist.indexOf(a) - globhist.indexOf(b))));
+			//Переделываем историю
+			for (tmppoint in tmpsort) {
+				tmppos=globhist.indexOf(tmpsort[tmppoint]);
+				if (tmppos>=0){
+					newGlobhist[tmppos]=preId+(Number(tmppoint)+Profiles[nindex].StartIndex)+profSym+Profiles[nindex].pointarr;
+				}					
+			}
+			//удаляем дополнения
+			for (tmppoint in tmpsort) {
+				tmpsort[tmppoint]=(Number(tmpsort[tmppoint].split(profSym)[0].replace(preId,''))-Profiles[nindex].StartIndex);
+			}
+			//tmparr=newid.split(profSym);
+			arrsort[nindex]=tmpsort;
 			}
 			//на выходе получаем массив нужного профиля с индексами в нужном порядке
 			//update history
@@ -754,20 +774,7 @@ $(document).ready(function() {
 		//Текущий профиль, точки
 		var curbtn='';
 		flylist=$('#mainpic .mycircle');
-		function drawpointCur(el,group){
-			var elemmap=$(el);
-			var curbtn='';
-			if (typeof(group)=='undefined' || group=='undefined'){
-				group=el.data('group');
-			}
-			curbtn+="\t"+'{'+"\n";
-			curbtn+="\t\t"+"'Name':'"+addslashes(elemmap.attr('title'))+"',"+"\n";
-			curbtn+="\t\t"+"'CoordX':'"+elemmap.css('left')+"',"+"\n";
-			curbtn+="\t\t"+"'CoordY':'"+elemmap.css('top')+"',"+"\n";
-			curbtn+="\t\t"+"'Groups':'"+"["+group+"]',"+"\n";
-			curbtn+="\t"+'},'+"\n";
-			return curbtn;
-		}
+		
 		//собираем точки
 		if (alton){
 			for (tmppoint in arrsort[profileIndex]) {
