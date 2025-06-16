@@ -225,7 +225,7 @@ $(document).ready(function() {
 	}
 	function langSelect(langdir){
 		//import
-		let path='./lang/'+langdir+'/index.js';
+		let path='./lang/'+langdir.toLowerCase()+'/index.js';
 		if (typeof(langStr)!='undefined'){
 			//уже есть, удаляем
 			langScript.remove();
@@ -1389,7 +1389,7 @@ $(document).ready(function() {
 		el.siblings().removeClass('active');
 		//on this
 		el.toggleClass('active');
-		defaultLang=this.innerText.trim().toLowerCase();
+		defaultLang=this.innerText.trim();
 		globSettings['lang']=defaultLang;
 		//меняем язык
 		langSelect(defaultLang);
