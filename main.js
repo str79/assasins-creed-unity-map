@@ -35,7 +35,7 @@ $(document).ready(function() {
 	var activeongroups=1; //включать ли категории (в начале и при переключении профилей-карт)
 	var lastId; //последний ид точки-круга (для применения действий над ним)
 	var histMoveNum; //номер перемещаемого элемента в истории
-	var defaultLang='RU' //язык по дефолту.
+	var defaultLang='ru' //язык по дефолту.
 	var langScript; //скрипт языка
 	var settingsName; //название настроек
 	var globhist; //массив истории
