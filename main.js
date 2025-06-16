@@ -1389,7 +1389,7 @@ $(document).ready(function() {
 		el.siblings().removeClass('active');
 		//on this
 		el.toggleClass('active');
-		defaultLang=this.innerText.trim();
+		defaultLang=this.innerText.trim().toLowerCase();
 		globSettings['lang']=defaultLang;
 		//меняем язык
 		langSelect(defaultLang);
