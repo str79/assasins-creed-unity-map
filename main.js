@@ -1853,7 +1853,7 @@ $(document).ready(function() {
 			//удаляем её из истории - не сильно надо.
 		}
 	});
-	$('#mainpic').touchstart(function(event){
+	$('#mainpic').on('touchstart',function(event){
 		var searchstr='';
 		$('#flycMenu').addClass('hide');
 		$('#flyaoMenu').addClass('hide');
@@ -1992,7 +1992,7 @@ $(document).ready(function() {
 	$('#mainpic').ondragstart = function() {
 		return false;
 	};
-	$('body').touchend (function(event){
+	$('body').on('touchend',function(event){
 		//console.log('mouseup');
 		var mainpic=$('#mainpic');
 		var curscale=Profiles[profileIndex].zoom;
@@ -2094,7 +2094,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-	$('#mainpic').touchmove(function(event){
+	$('#mainpic').on('touchmove',function(event){
 		var curscale=1;
 		var element = document.querySelector('#mainpic');
 		var scaleX = element.getBoundingClientRect().width / element.offsetWidth;
