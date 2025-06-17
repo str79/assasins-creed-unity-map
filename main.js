@@ -1853,7 +1853,7 @@ $(document).ready(function() {
 			//удаляем её из истории - не сильно надо.
 		}
 	});
-	$('#mainpic').mousedown(function(event){
+	$('#mainpic').touchstart(function(event){
 		var searchstr='';
 		$('#flycMenu').addClass('hide');
 		$('#flyaoMenu').addClass('hide');
@@ -1992,7 +1992,7 @@ $(document).ready(function() {
 	$('#mainpic').ondragstart = function() {
 		return false;
 	};
-	$('body').mouseup(function(event){
+	$('body').touchend (function(event){
 		//console.log('mouseup');
 		var mainpic=$('#mainpic');
 		var curscale=Profiles[profileIndex].zoom;
@@ -2094,7 +2094,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-	$('#mainpic').mousemove(function(event){
+	$('#mainpic').touchmove(function(event){
 		var curscale=1;
 		var element = document.querySelector('#mainpic');
 		var scaleX = element.getBoundingClientRect().width / element.offsetWidth;
@@ -2223,6 +2223,7 @@ $(document).ready(function() {
 						cy=mapposcy+(event.pageY-mapposy)/curscale;
 					}
 					if (mainpic){
+						console.log('moved');
 						mainpic.css('left',cx+'px');
 						mainpic.css('top',cy+'px');
 						//Также обновляем временные линии (даже если не включены маршруты)
