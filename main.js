@@ -69,9 +69,20 @@ $(document).ready(function() {
 	
 	function preinit(){
 		//определить что мобильный
-		if (detectMob){
+		if (detectMob()){
 			detMob=1;
-			//console.log('загружен мобильный, проверка основных файлов');
+			console.log('загружен мобильный ');
+			//console.log('загружен мобильный w: '+window.innerWidth+' h: '+window.innerHeight);
+			/*console.log('мобильный w: '+( window.innerWidth <= 800 )+' h: '+( window.innerHeight <= 600 ));
+			console.log('мобильный ob: '+(( window.innerWidth <= 800 )&&( window.innerHeight <= 600 )));*/
+			//скрываем панели для мобильного
+			$('#flylist .maingroups').toggleClass('hide');
+			$('.mainfly').toggleClass('hide');
+			//$('#flyProf .fpCont')
+		}else{
+			/*console.log('загружен мобильный w: '+window.innerWidth+' h: '+window.innerHeight);
+			console.log('мобильный w: '+( window.innerWidth <= 800 )+' h: '+( window.innerHeight <= 600 ));
+			console.log('мобильный ob: '+(( window.innerWidth <= 800 )&&( window.innerHeight <= 600 )));*/
 		}
 		//установка  переменных
 		historyName=$('.gameName').text()+'hist';
@@ -2968,6 +2979,6 @@ $(document).ready(function() {
 		}
 	}
 	function detectMob() {
-		return ( ( window.innerWidth <= 800 ) && ( window.innerHeight <= 600 ) );
+		return ( ( window.innerWidth <= 800 ));
 	}
 });
