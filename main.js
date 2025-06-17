@@ -78,6 +78,7 @@ $(document).ready(function() {
 			//скрываем панели для мобильного
 			$('#flylist .maingroups').toggleClass('hide');
 			$('.mainfly').toggleClass('hide');
+			$('body').addClass('mobile');
 			//$('#flyProf .fpCont')
 		}else{
 			/*console.log('загружен мобильный w: '+window.innerWidth+' h: '+window.innerHeight);
@@ -1853,7 +1854,7 @@ $(document).ready(function() {
 			//удаляем её из истории - не сильно надо.
 		}
 	});
-	$('#mainpic').on('touchstart',function(event){
+	$('#mainpic').on('touchstart mousedown',function(event){
 		var searchstr='';
 		$('#flycMenu').addClass('hide');
 		$('#flyaoMenu').addClass('hide');
@@ -1992,7 +1993,7 @@ $(document).ready(function() {
 	$('#mainpic').ondragstart = function() {
 		return false;
 	};
-	$('body').on('touchend',function(event){
+	$('body').on('touchend mouseup',function(event){
 		//console.log('mouseup');
 		var mainpic=$('#mainpic');
 		var curscale=Profiles[profileIndex].zoom;
@@ -2094,7 +2095,7 @@ $(document).ready(function() {
 			}
 		}
 	});
-	$('#mainpic').on('touchmove',function(event){
+	$('#mainpic').on('touchmove mousemove',function(event){
 		var curscale=1;
 		var element = document.querySelector('#mainpic');
 		var scaleX = element.getBoundingClientRect().width / element.offsetWidth;
@@ -2223,7 +2224,7 @@ $(document).ready(function() {
 						cy=mapposcy+(event.pageY-mapposy)/curscale;
 					}
 					if (mainpic){
-						console.log('moved');
+						//console.log('map moved');
 						mainpic.css('left',cx+'px');
 						mainpic.css('top',cy+'px');
 						//Также обновляем временные линии (даже если не включены маршруты)
