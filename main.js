@@ -63,6 +63,9 @@ $(document).ready(function() {
 	};//Ассоциативный массив стандартных настроек назначений кнопок
 	var usedKeys={};//Ассоциативный массив применяемых настроек назначений кнопок
 	var detMob=0;//Мобильное ли устройство
+	var isDragging = false; //события перемещения картинки, для мобильных нажатий, фикс. отмены перетаскивания
+	var tapCount = 0; //к-во нажатий, имитация dbl click для мобильников
+	var tapTimer=null; //тоже таймер для dbl click
 	
 	preinit();
 	
@@ -1854,12 +1857,48 @@ $(document).ready(function() {
 			//удаляем её из истории - не сильно надо.
 		}
 	});
+	
+	$('#mainpic').on('touchstart',function(e){
+		isDragging = true;
+		e.preventDefault(); // Блокируем стандартное поведение
+	});
+	$('#mainpic').on('touchmove',function(e){
+		if (isDragging) {
+			e.preventDefault(); // Блокируем скролл страницы при движении картинки
+			// Ваш код перемещения картинки (например, через transform)
+		}
+	});
+	$('#mainpic').on('touchend',function(e){
+		isDragging = false;
+	});
+	
+	
+	
 	//mousedown
 	$('#mainpic').on('pointerdown',function(event){
 		var searchstr='';
 		$('#flycMenu').addClass('hide');
 		$('#flyaoMenu').addClass('hide');
 		//console.log(event);
+		
+		//просто сбор периодичности кликов для имитации dblclick на мобиле
+		tapCount++;
+		if (tapCount === 2) {
+			clearTimeout(tapTimer);
+			if ((event.target.className.indexOf('mycircle')>=0) && $('body').hasClass('mobile')){
+				console.log('dblclick');
+				//event.target.trigger('dblclick'); // Аналог dispatchEvent, но в jQuery
+				mycircleDblclick(event.target.id);
+			}
+			tapCount = 0;
+		}
+		else{
+			tapTimer = setTimeout(() => {
+				tapCount = 0;
+			}, 300); // Таймаут между кликами
+		}		
+		
+		
 		if (event.target.className.indexOf('mycircle')>=0){mapcircle=1;}
 		if (event.shiftKey && mapcircle==1 && !gsize){
 			let elem=$(event.target);
@@ -2301,19 +2340,23 @@ $(document).ready(function() {
 		var cce=$('#'+el.data('id'));
 		centerOnMap(cce);
 	});
+	function mycircleDblclick(newid){
+		//дабл клик по кругу - ищем его id в списке и тыкаем по иконке.
+		//var newid=event.target.id;
+		var flylist;
+		flylist=$('#flylist .list-group-item .list-group-item-text');
+		//console.log(newid);
+		flylist.each(function(){
+			if ($(this).data('id')==newid){
+				//нашли
+				$(this).find('.icon').trigger('click');
+			}
+		});
+	}
 	$('#mainpic').dblclick(function(event){
 		if (event.target.className.indexOf('mycircle')>=0){
-			//дабл клик по кругу - ищем его id в списке и тыкаем по иконке.
-			var newid=event.target.id;
-			var flylist;
-			flylist=$('#flylist .list-group-item .list-group-item-text');
-			//console.log(newid);
-			flylist.each(function(){
-				if ($(this).data('id')==newid){
-					//нашли
-					$(this).find('.icon').trigger('click');
-				}
-			});
+			//дабл клик по кругу
+			mycircleDblclick(event.target.id);
 		}
 		else if(circlept==1){
 			var tmpDesc=$('.objcirclept .ptDescr').text();
