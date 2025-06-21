@@ -147,9 +147,6 @@ body .mycircle.hide{
 	right: 0;
 	z-index: 2;
 }
-.mobile .helpp{
-	top: 3.3em;
-}
 
 .langSelect{
 	float: right;
@@ -210,9 +207,6 @@ body .mycircle.hide{
 	right: 0;
 	top: 3.3em;
 	z-index: 1;
-}
-.mobile #flyProf{
-	top: 6.6em;
 }
 #flyProf .container .fpCont{
 	margin: 0;
@@ -527,4 +521,15 @@ body .mycircle.hide{
 	-webkit-box-shadow: 0px 0px 8px 5px rgba(39, 198, 48, 0.94);
 	-moz-box-shadow: 0px 0px 8px 5px rgba(39, 198, 48, 0.94);
 	box-shadow: 0px 0px 8px 5px rgba(39, 198, 48, 0.94);	
+}
+.mobile #flyProf{
+	top: 6.6em;
+	position: fixed;
+}
+.mobile .helpp{
+	top: 3.3em;
+	position: fixed;
+}
+body.mobile{
+	overflow: auto;	
 }

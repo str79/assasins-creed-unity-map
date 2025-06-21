@@ -80,9 +80,9 @@ $(document).ready(function() {
 			$('.mainfly').toggleClass('hide');
 			$('body').addClass('mobile');
 			//$('#flyProf .fpCont')
-		}else{
+			}else{
 			/*console.log('загружен мобильный w: '+window.innerWidth+' h: '+window.innerHeight);
-			console.log('мобильный w: '+( window.innerWidth <= 800 )+' h: '+( window.innerHeight <= 600 ));
+				console.log('мобильный w: '+( window.innerWidth <= 800 )+' h: '+( window.innerHeight <= 600 ));
 			console.log('мобильный ob: '+(( window.innerWidth <= 800 )&&( window.innerHeight <= 600 )));*/
 		}
 		//установка  переменных
@@ -104,7 +104,7 @@ $(document).ready(function() {
 		})
 	}
 	function init(){
-
+		
 		//Загрузка истории
 		loadHistory();
 		//загрузка игнор листа
@@ -1854,7 +1854,8 @@ $(document).ready(function() {
 			//удаляем её из истории - не сильно надо.
 		}
 	});
-	$('#mainpic').on('touchstart mousedown',function(event){
+	//mousedown
+	$('#mainpic').on('pointerdown',function(event){
 		var searchstr='';
 		$('#flycMenu').addClass('hide');
 		$('#flyaoMenu').addClass('hide');
@@ -1953,10 +1954,20 @@ $(document).ready(function() {
 		el=$(this);
 		el.addClass('active');
 		if (mapcircle==1){el=$(event.target);maptarget=el;}
-		mapposx=parseInt(event.pageX);
-		mapposy=parseInt(event.pageY);
-		mapposcx=parseInt(el.css('left'));
-		mapposcy=parseInt(el.css('top'));
+		if (event.type=="touchstart" ){
+			/*event.originalEvent.touches[0].clientX*/
+			mapposx=parseInt(event.originalEvent.touches[0].screenX);
+			mapposy=parseInt(event.originalEvent.touches[0].screenY);
+			mapposcx=parseInt(el.css('left'));
+			mapposcy=parseInt(el.css('top'));
+			event.preventDefault()
+		}
+		else{
+			mapposx=parseInt(event.pageX);
+			mapposy=parseInt(event.pageY);
+			mapposcx=parseInt(el.css('left'));
+			mapposcy=parseInt(el.css('top'));
+		}
 		if (circlept){
 			mapposcx=parseInt(event.pageX);
 			mapposcy=parseInt(event.pageY);
@@ -1987,13 +1998,22 @@ $(document).ready(function() {
 		}
 		return false;
 	});
-	$('#body').ondragstart = function() {
+	$('#body').on('dragstart',function(event) {
+		//ondragstart 
+		event.preventDefault();
 		return false;
-	};
-	$('#mainpic').ondragstart = function() {
+	});
+	$('#mainpic').on('dragend',function(event) {
+		event.preventDefault();	
 		return false;
-	};
-	$('body').on('touchend mouseup',function(event){
+	});
+	$('#mainpic').on('pointercancel',function(event) {
+		console.log('pointercancel');
+		event.preventDefault();
+		return false;
+	})
+	//mouseup
+	$('body').on('pointerup',function(event){
 		//console.log('mouseup');
 		var mainpic=$('#mainpic');
 		var curscale=Profiles[profileIndex].zoom;
@@ -2095,7 +2115,8 @@ $(document).ready(function() {
 			}
 		}
 	});
-	$('#mainpic').on('touchmove mousemove',function(event){
+	//mousemove
+	$('#mainpic').on('pointermove',function(event){
 		var curscale=1;
 		var element = document.querySelector('#mainpic');
 		var scaleX = element.getBoundingClientRect().width / element.offsetWidth;
